@@ -13,6 +13,7 @@ use App\Models\PaymentRecvBy;
 use App\Exports\RegistrationsExport;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\RenualRegistrationsExport;
 
 class RegistrationController extends Controller
 {
@@ -310,13 +311,41 @@ public function show($id)
 
     public function updateStatus(Request $request){
         // dd($request->all());
-        Registration::find($request->id)->update([
-          'call_done' => $request->call_done ?? 'Not Connected',
-          'call_comment' => $request->call_comment ?? null,
-          'review' => $request->review ?? 'Not Connected',
-          'review_comment' => $request->review_comment ?? null
-        ]);
-        $query = $request->only(['month_year', 'page']);
-        return redirect()->route('registration.monthly',  $query)->with('success', 'Status updated successfully');
+        if (Auth::user()->role !== 'admin') {
+            Registration::find($request->id)->update([
+                'call_done' => $request->call_done ?? 'Not Connected',
+                'call_comment' => $request->call_comment ?? null,
+                'review' => $request->review ?? 'Not Connected',
+                'review_comment' => $request->review_comment ?? null
+              ]);
+              $query = $request->only(['month_year', 'page']);
+          return redirect()->route('registration.monthly',  $query)->with('success', 'Status updated successfully');
+        }
+        return back();
+    }
+
+    public function exportRegistrations(Request $request)
+    {
+        //  dd($request->all());
+         // Retrieve the dates and case_id from the request
+         $installationDate = $request->input('installation_date');
+         $expiryDate = $request->input('expiry_date');
+         $case_id = $request->input('case_id');
+         // dd($case_id);
+         if (!$case_id) {
+             $registrations = Registration::with(['callRecords','products', 'installedBy', 'calledBy', 'paymentReceivedBy', 'renual', 'renual.calledBy', 'renual.caseStatus'])->where('expiry_date', '<=', $expiryDate)
+             ->where('expiry_date', '>=', $installationDate)->get();
+            //  dd('null');
+         }else{
+             $registrations = Registration::with(['callRecords','products', 'installedBy', 'calledBy', 'paymentReceivedBy', 'renual', 'renual.calledBy', 'renual.caseStatus'])
+             ->where('expiry_date', '<=', $expiryDate)
+             ->where('expiry_date', '>=', $installationDate)
+             ->whereHas('callRecords', function($query) use ($case_id) {
+                 $query->where('call_status', $case_id);
+             })->get();
+         }
+        // dd($registrations);
+      return Excel::download(new RenualRegistrationsExport($registrations), 'registrations.csv');
+       
     }
 }

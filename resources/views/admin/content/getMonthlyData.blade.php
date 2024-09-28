@@ -5,24 +5,23 @@
 <!-- Display Call Records -->
 <div class="content-wrapper">
     <div class=" pt-4">
-       
-        <div class="card">
-                <div class="card-header"> 
-                    <form>
-                        <div class="row">
-                            <div class="col-md-3">
-                                <input type="month" id="month-year" name="month_year" required>
-                            </div>
-                        
-                            <div class="col-md-2 ml-3 mt-1">
-                                <button type="submit" class="btn btn-primary btn-sm">Filter Data</button>
-                            </div>
-                    </form>
-                </div>
-                @if(isset($registrations) && $registrations->count() > 0)
-                
-                <div class="card-body">
-                  <div>
+        <div>
+            <form class="ml-5 mr-5">
+             <div class="row ml-2" style="display: flex">
+               <div class="">
+                <input type="month" id="month-year" name="month_year" required>
+               </div>
+        
+               <div class=" ml-3 ">
+                <button type="submit" class="btn btn-primary btn-sm">Filter Data</button>
+               </div>
+            </form>
+        </div>
+        
+        @if(isset($registrations) && $registrations->count() > 0)
+        <div class="card ml-5 mr-5">
+                 <div class="card-header"> 
+                  <div class="ml-4">
                     <div class="row">
                         <div class="col-md-6">
                             <h5>Month: {{ $month }}/{{$year}}</h5>
@@ -43,53 +42,61 @@
                             <h5>Total Review:{{$reviewCount}}</h5>
                         </div>
                   </div>
+                </div>
+                <div class="card-body">
                     <table class="table table-bordered">
                         <thead>
                         <tr>
                             <th>No</th>
                             <th>Ins Date</th>
-                            <th>Customer Name</th>
-                            <th>Phone Number</th>
-                            <th>Email</th>
+                            <th>User Details</th>
                             <th>Product</th>
                             <th>Call Done</th>
                             <th>Call Comment</th>
                             <th>Review</th>
                             <th>Review Comment</th>
+                             @if (Auth::user()->role !== 'admin')
                             <th>Action</th>
+                            @endif
                         </tr>
                         </thead>
                         <tbody>
                             @foreach($registrations as $reg)
                                 <tr>
-                                    <td>{{ $loop->index + 1 }}</td>
-                                    <td>{{ $reg->installation_date}}</td>
-                                    <td>{{ $reg->customer_name }}</td>
-                                    <td>{{ $reg->mobile_no ?? 'N/A'}}</td>
-                                    <td>{{ $reg->email_id ?? 'N/A'}}</td>
-                                    <td>{{ $reg->products->prod_list }}</td>
-                                    <td>
-                                      <span class="
-                                      @if($reg->call_done === 'Yes') text-success
-                                      @elseif($reg->call_done === 'No') text-danger
-                                      @elseif($reg->call_done === 'Not Connected') text-warning
+                                    <td class="text-center">{{ $loop->index + 1 }}</td>
+                                    @php
+                                        $installation = new DateTime($reg->installation_date);
+                                        $installation_date = $installation->format('d/m/Y');
+                                    @endphp
+                                    <td class="text-center">{{ $installation_date}}</td>
+                                    <td>Name: {{ $reg->customer_name }} <br>Phone No: {{ $reg->mobile_no ?? 'N/A'}} <br>Email: {{ $reg->email_id ?? 'N/A'}}  </td>
+                                    <td class="text-center">{{ $reg->products !== null ? $reg->products->prod_list : 'N/A' }}</td>
+                                    <td class="text-center">
+                                      
+                                      
+                                      @if($reg->call_done === 'Yes') 
+                                      🟢
+                                      @elseif($reg->call_done === 'No') 
+                                      🔴
+                                      @elseif($reg->call_done === 'Not Connected') 
+                                      🟡
                                       @endif
-                                  ">
-                                      {{ $reg->call_done }}
-                                  </span></td>
-                                    <td>{{ $reg->call_comment ?? 'N/A' }}</td>
-                                    <td>
-                                      <span class="
-                                      @if($reg->call_done === 'Yes') text-success
-                                      @elseif($reg->call_done === 'No') text-danger
-                                      @elseif($reg->call_done === 'Not Connected') text-warning
-                                      @endif
-                                  ">
-                                      {{ $reg->review }}
-                                      </span>
+                                 
+                                    
                                     </td>
-                                    <td>{{ $reg->review_comment ?? 'N/A' }}</td>
-                                    <td>
+                                    <td class="text-center">{{ $reg->call_comment ?? 'N/A' }}</td>
+                                    <td class="text-center">
+                                       @if($reg->review === 'Yes') 
+                                      🟢
+                                      @elseif($reg->review === 'No') 
+                                      🔴
+                                      @elseif($reg->review === 'Not Connected') 
+                                      🟡
+                                      @endif
+                                    </td>
+                                    <td class="text-center">{{ $reg->review_comment ?? 'N/A' }}</td>
+                                     @if (Auth::user()->role !== 'admin')
+                                    <td class="text-center">
                                       <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#callReviewModal" 
                                       onclick="update({{$reg->id}}, {{$reg}})"
                                       @if (($reg->call_done === 'Yes' || $reg->call_done === 'No') && 
@@ -100,7 +107,8 @@
                                   Call Now
                               </button>
                               
-                                    </td>
+                                </td>
+                                @endif
                                 </tr>
                             @endforeach
                     </tbody>
@@ -109,9 +117,8 @@
                 <div class="card-footer d-flex justify-content-center" id="pagination-links">
                     {{ $registrations->appends(request()->query())->links() }}
                 </div>
-            @endif
         </div>
- 
+       @endif
     </div>
 </div>
 @if(isset($registrations) && $registrations->count() > 0)      

@@ -15,7 +15,7 @@ class RegistrationsExport implements FromCollection, WithHeadings
     public function collection()
     {
         // Fetch all registrations with their related models
-        $registrations =  Registration::with(['products', 'installedBy', 'calledBy', 'paymentReceivedBy'])
+        $registrations =  Registration::with(['products', 'installedBy', 'calledBy', 'paymentReceivedBy', 'renual', 'renual.calledBy', 'renual.caseStatus'])
             ->get()
             ->map(function ($registration) {
                 return [
@@ -42,10 +42,13 @@ class RegistrationsExport implements FromCollection, WithHeadings
                     'batch_no' => $registration->batch_no,
                     'call_by' => $registration->calledBy->call_by ?? '',  // Adjust field names accordingly
                     'payment_received_by' => $registration->paymentReceivedBy->	pay_recv_by ?? '',
+                    'CASE STATUS' => $registration->renual ? $registration->renual->caseStatus->case_status : '',
+                    'FOLLOW UP DATE' => $registration->renual ? $registration->renual->caseStatus->case_status === 'Follow Up' ? $registration->renual->call_time : ''  : '',
+                    'CALL DONE' => $registration->renual ? $registration->renual->calledBy !== null ? $registration->renual->calledBy->call_by : '' : '',
+                    'COMMENT' => $registration->renual ? $registration->renual->call_note : '', 
                 ];
+                
             });
-            
-            // dd($data[0]);
             return $registrations;
     
         }
@@ -81,6 +84,10 @@ class RegistrationsExport implements FromCollection, WithHeadings
             'BATCH NO',
             'CALL BY',
             'PAYMENT RECEIVED BY',
+            'CASE STATUS',
+            'FOLLOW UP DATE',
+            'CALL DONE',
+            'COMMENT', 
         ];
     }
 }

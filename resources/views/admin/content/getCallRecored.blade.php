@@ -43,23 +43,38 @@
             </div>
             <div class="form-group col-md-3" >
                 <button type="submit" class="btn btn-primary" style="margin-top: 31px">Filter Data</button>
+               
             </div> 
+           
         </form>
         
         <!-- Display Call Records -->
         @if(isset($registrations) && $registrations->count() > 0)
         <div class="card mt-5" style="min-width: 882px">
-            <div class="card-header">
-                @php
+            <div class="card-header" style="display:flex; gap:10px; align-items: center;">
+            @php
                     
-                      $start = new DateTime($installationDate);
-                      $end = new DateTime($expiryDate);
-                      $startDate = $start->format('d/m/y');
-                      $endDate = $end->format('d/m/y');
-                @endphp
+                $start = new DateTime($installationDate);
+                $end = new DateTime($expiryDate);
+                $startDate = $start->format('d/m/y');
+                $endDate = $end->format('d/m/y');
+            @endphp
+                @if(isset($registrations) && $registrations->count() > 0)
+                <form action="{{route('registration.renualExport')}}" method="POST"  >
+                    @csrf
+                    <input type="hidden" name="installation_date" value="{{ $installationDate }}">
+                    <input type="hidden" name="expiry_date" value="{{ $expiryDate }}">
+                    <input type="hidden" name="case_id" value="{{ old('case_id') }}">
+                    <input type="hidden" name="page" value="{{ request('page') }}">
+                    <button type="submit" class="btn btn-success mr-7">Imposr CSV</button>
+                </form>
+                @endif
+               
                 {{
                      "Expiry between $startDate and $endDate";
                 }}
+
+                
             </div>
             <div class="card-body">
                 <table class="table table-bordered">

@@ -73,4 +73,8 @@ class Registration extends Model
     {
         return $this->hasMany(CallRecord::class, 'cust_id');
     }
+    public function renual()
+    {
+        return $this->hasOne(CallRecord::class, 'cust_id')->orderBy('created_tymeold', 'desc');
+    }
 }

@@ -100,6 +100,8 @@ Route::middleware([AuthCheck::class])->group(function () {
         Route::get('/registration-export', [RegistrationController::class, 'exportCsv'])->name('registration.export');
         Route::get('/registration-monthly-data', [RegistrationController::class, 'monthlyData'])->name('registration.monthly');
         Route::post('/registration-monthly-data-update', [RegistrationController::class, 'updateStatus'])->name('registration.updateStatus');
+        Route::post('/registration-renual-export', [RegistrationController::class, 'exportRegistrations'])->name('registration.renualExport');
+
 
 
         // CallRecord routes

@@ -13,7 +13,7 @@
       </div>
     </div>
     <section class="py-0">
-      <div class="swiper theme-slider min-vh-100" data-swiper='{"loop":true,"allowTouchMove":false,"autoplay":{"delay":5000},"effect":"fade","speed":800}'>
+      {{-- <div class="swiper theme-slider min-vh-100" data-swiper='{"loop":true,"allowTouchMove":false,"autoplay":{"delay":5000},"effect":"fade","speed":800}'>
         <div class="swiper-wrapper">
           @foreach ($images as $image )
           <div class="swiper-slide" data-zanim-timeline="{}">
@@ -35,7 +35,10 @@
           <div class="swiper-button-prev"><span class="fas fa-chevron-left"></span></div>
           <div class="swiper-button-next"><span class="fas fa-chevron-right"></span></div>
         </div>
-      </div>
+      </div> --}}
+
+      <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.28/build/spline-viewer.js"></script>
+      <spline-viewer url="https://prod.spline.design/Gctd-pyq8ZnvhxPp/scene.splinecode"></spline-viewer>
     </section>
 
     <section class="bg-white text-center">
@@ -107,7 +110,9 @@
           <hr class="short" data-zanim-xs='{"from":{"opacity":0,"width":0},"to":{"opacity":1,"width":"4.20873rem"},"duration":0.8}' data-zanim-trigger="scroll" />
         </div>
         <div class="row">
-          <div class="col-lg-6 pe-lg-3"><img class="rounded-3 img-fluid" src="{{asset('Admin/assets/img/223.jpg')}}" alt="about" /></div>
+          <div class="col-lg-6 pe-lg-3">
+            <img class="rounded-3 img-fluid" src="{{asset('Admin/assets/img/223.jpg')}}" alt="about" />
+          </div>
           <div class="col-lg-6 px-lg-5 mt-6 mt-lg-0" data-zanim-timeline="{}" data-zanim-trigger="scroll">
             <div class="overflow-hidden">
               <div class="px-4 px-sm-0" data-zanim-xs='{"delay":0}'>

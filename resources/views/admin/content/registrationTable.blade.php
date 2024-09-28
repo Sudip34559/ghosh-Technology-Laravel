@@ -118,6 +118,11 @@
 
     function updateTable(registrations) {
         // console.log(registrations);
+        const user ={
+            id:{{Auth::user()->id}},
+            name: '{{Auth::user()->role}}'
+            }
+        console.log(user)
         let tableBody = document.getElementById('registration-table-body');
         tableBody.innerHTML = '';
         registrations.forEach((registration, index) => {
