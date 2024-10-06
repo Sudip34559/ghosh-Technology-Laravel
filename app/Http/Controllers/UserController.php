@@ -227,5 +227,26 @@ class UserController extends Controller
         // Redirect with success message
         return back()->with('success', 'Employee updated successfully!');
     }
+
+    public function changePassword(Request $request){
+        // Validate the form data
+        // dd($request->all());
+       $request->validate([
+            'password' => 'required|min:6',
+        ]);
+
+
+        // Fetch the user from the database
+        $user = Auth::user();
+
+        // Check if the current password matches the user's password
+        
+            // Update the user's password
+            $user->password = bcrypt($request->password);
+            $user->save();
+
+            // Redirect with success message
+            return back()->with('success', 'Password changed successfully!');
+    }
 }
 

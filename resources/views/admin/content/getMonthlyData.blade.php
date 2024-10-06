@@ -47,7 +47,19 @@
                     <table class="table table-bordered">
                         <thead>
                         <tr>
-                            <th>No</th>
+                            <th>
+                            @php
+                              $currentOrderid = request('order', 'asc');
+                              $newOrderid = ($currentOrderid === 'asc') ? 'desc' : 'asc';
+                            @endphp
+                          No
+                          <a href="{{ route('registration.monthly', array_merge(request()->query(), ['column' => 'id', 'order' => $newOrderid])) }}">
+                              @if($newOrderid === 'asc')
+                                  ↑
+                              @else
+                                  ↓
+                              @endif
+                            </th>
                             <th>Ins Date</th>
                             <th>User Details</th>
                             <th>Product</th>

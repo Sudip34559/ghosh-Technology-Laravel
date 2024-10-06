@@ -22,6 +22,10 @@ Route::get('/about', [PageController::class, 'about'])->name('about');
 Route::get('/contact', [PageController::class, 'contact'])->name('contuct');
 Route::get('/service', [PageController::class,'service'])->name('service');
 Route::get('/image-galary', [PageController::class, 'imageGalary'])->name('imageGalary');
+Route::get('/privacy-and-policy', [PageController::class, 'privecy'])->name('privecy');
+Route::get('/terms-and-conditions', [PageController::class, 'termCondition'])->name('term&conditions');
+Route::get('/refund-and-Cancellation', [PageController::class, 'refund'])->name('refund&Cancellation');
+
 
 //user routes
 Route::post('/user-login', [UserController::class, 'login'])->name('login');
@@ -108,6 +112,7 @@ Route::middleware([AuthCheck::class])->group(function () {
         Route::get('/call-records', [CallRecordeController::class, 'getCallRecordsByDateRange'])->name('callRecords.index');
         Route::post('/call-record/update', [CallRecordeController::class, 'addCallStatus'])->name('callRecord.update');
         Route::get('/call-books/{id}', [CallRecordeController::class, 'getCallBooks'])->name('callBooks.show');
+        Route::get('/call-details/{id}', [CallRecordeController::class, 'callrecordesDetails'])->name('callBooks.details');
 
 
         // Logout route
@@ -121,10 +126,9 @@ Route::middleware([AuthCheck::class])->group(function () {
         // Contuct routes
         Route::get('/contucts', [ContuctController::class, 'index'])->name('contucts.index');
         Route::get('/contucts/{id}', [ContuctController::class, 'destroy'])->name('contucts.destroy');
-        
-        
 
-
+        
+        Route::patch('/password-change', [UserController::class, 'changePassword'])->name('changePassword');
 });
 
     

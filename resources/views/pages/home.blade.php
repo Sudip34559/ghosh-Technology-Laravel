@@ -1,6 +1,6 @@
 <x-layout.index :data="$headers" >
   {{-- @dd($headers) --}}
-<main class="main" id="top">
+<main class="main pt-5" id="top">
     <div class="preloader" id="preloader">
       <div class="loader">
         <div class="line-scale">
@@ -13,11 +13,12 @@
       </div>
     </div>
     <section class="py-0">
-      {{-- <div class="swiper theme-slider min-vh-100" data-swiper='{"loop":true,"allowTouchMove":false,"autoplay":{"delay":5000},"effect":"fade","speed":800}'>
+      <div class="swiper theme-slider min-vh-100" data-swiper='{"loop":true,"allowTouchMove":false,"autoplay":{"delay":5000},"effect":"fade","speed":800}'>
         <div class="swiper-wrapper">
           @foreach ($images as $image )
           <div class="swiper-slide" data-zanim-timeline="{}">
-            <div class="bg-holder" style="background-image:url({{asset('storage/' . $image->image)}});"></div>
+            <div class="bg-holder" style="background-image:url({{asset('storage/' . $image->image)}});">
+            </div>
             <!--/.bg-holder-->
             <div class="container">
               <div class="row min-vh-100 py-8 align-items-center" data-inertia='{"weight":1.5}'>
@@ -35,10 +36,10 @@
           <div class="swiper-button-prev"><span class="fas fa-chevron-left"></span></div>
           <div class="swiper-button-next"><span class="fas fa-chevron-right"></span></div>
         </div>
-      </div> --}}
+      </div>
 
-      <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.28/build/spline-viewer.js"></script>
-      <spline-viewer url="https://prod.spline.design/Gctd-pyq8ZnvhxPp/scene.splinecode"></spline-viewer>
+      {{-- <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.28/build/spline-viewer.js"></script>
+      <spline-viewer url="https://prod.spline.design/Gctd-pyq8ZnvhxPp/scene.splinecode"></spline-viewer> --}}
     </section>
 
     <section class="bg-white text-center">

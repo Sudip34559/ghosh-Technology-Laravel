@@ -11,7 +11,7 @@ class PageController extends Controller
 {
     public function home(){
         $headers = Header::all();
-        $images = SliderImage::take(3)->get();
+        $images = SliderImage::all();
         return view('pages.home', compact('headers', 'images'));
     }
     public function about(){
@@ -38,6 +38,19 @@ class PageController extends Controller
     // dd($galleries);
         $headers = Header::all();
         return view('pages.imageGelary', compact('headers', 'galleries'));
+    }
+
+    public function privecy(){
+        $headers = Header::all();
+        return view('pages.pryvecy', compact('headers'));
+    }
+    public function termCondition(){
+        $headers = Header::all();
+        return view('pages.term&condition', compact('headers'));
+    }
+    public function refund(){
+        $headers = Header::all();
+        return view('pages.refund', compact('headers'));
     }
 
 

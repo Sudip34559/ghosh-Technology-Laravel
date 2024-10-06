@@ -33,5 +33,4 @@ class CallRecord extends Model
     public function caseStatus(){
         return $this->belongsTo(CaseStatus::class, 'call_status');
     }
-
 }

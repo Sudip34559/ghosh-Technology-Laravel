@@ -97,6 +97,7 @@
             </div> --}}
            
             <!-- Donut Chart Card -->
+           
             <div class="card" style="max-width: 860px;margin-left: auto;
             margin-right: auto;">
                 <div class="card-header">
@@ -106,7 +107,9 @@
                     <canvas id="myDonutChart" style="height:250px; min-height:250px"></canvas>
                 </div>
             </div>
-
+            
+            
+            @if (Auth::user()->role == 'admin')
             <div class="card" style="max-width: 860px; margin-left: auto;
             margin-right: auto;">
                 <div class="card-header">
@@ -123,7 +126,9 @@
                     <canvas id="myBarChart" style="height:250px; min-height:250px"></canvas>
                 </div>
             </div>
-        <div class="card" style="max-width: 860px; margin-left: auto;
+            @endif
+
+            <div class="card" style="max-width: 860px; margin-left: auto;
             margin-right: auto;">
                 <div class="card-header">
                     <h3 class="card-title">Monthly Sales - {{ $sellChart['year']  }}</h3>
@@ -170,6 +175,7 @@
 </style>
 <script>
     // Data for the Donut Chart
+    const user = `{{Auth::user()->role}}`;
     var donutData = {
         labels: @json($chartData['labels']),
         datasets: [{
@@ -203,7 +209,8 @@
     });
 
     // Data for the Bar Chart
-    var barData = {
+    if (user === 'admin') {
+        var barData = {
         labels: @json($barChartData['months']).map(month => new Date(month).toLocaleString('default', { month: 'long' })),
         datasets: [{
             label: 'Monthly Calls',
@@ -232,6 +239,7 @@
         data: barData,
         options: barOptions
     });
+    }
 
     document.addEventListener('DOMContentLoaded', function() {
         const ctx = document.getElementById('salesChart').getContext('2d');
@@ -289,5 +297,6 @@
             }
         });
     });
+    
 </script>
 @endsection

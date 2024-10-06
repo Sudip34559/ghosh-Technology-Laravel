@@ -43,7 +43,6 @@
             </div>
             <div class="form-group col-md-3" >
                 <button type="submit" class="btn btn-primary" style="margin-top: 31px">Filter Data</button>
-               
             </div> 
            
         </form>
@@ -80,8 +79,35 @@
                 <table class="table table-bordered">
                     <thead>
                     <tr>
-                        <th>No</th>
-                        <th>Install</th>
+                        <th>
+                            @php
+                                $currentOrderid = request('order', 'asc');
+                                $newOrderid = ($currentOrderid === 'asc') ? 'desc' : 'asc';
+                            @endphp
+                            No
+                            <a href="{{ route('callRecords.index', array_merge(request()->query(), ['column' => 'id', 'order' => $newOrderid])) }}">
+                                @if($newOrderid === 'asc')
+                                    ↑
+                                @else
+                                    ↓
+                                @endif
+                            </a>
+                        </th>
+                        
+                        <th>
+                            @php
+                                $currentOrderins = request('order', 'asc');
+                                $newOrderins = ($currentOrderins === 'asc') ? 'desc' : 'asc';
+                            @endphp
+                            Install
+                            <a href="{{ route('callRecords.index', array_merge(request()->query(), ['column' => 'installation_date', 'order' => $newOrderins])) }}">
+                                @if($currentOrderins === 'asc')
+                                    ↑
+                                @else
+                                    ↓
+                                @endif
+                            </a>
+                        </th>
                         <th>Expiry</th>
                         <th>Call Status</th>
                         <th>Product</th>
@@ -122,6 +148,15 @@
                             <td>{{ $record->products->prod_list }}</td>
                             <td>{{ $record->customer_name }}</td>
                             <td>
+                                <a href="{{ route('callBooks.details', [
+                                    'id' => $record->id, 
+                                    'case_id' => request()->get('case_id'),
+                                    'installation_date' => request()->get('installation_date'),
+                                    'expiry_date' => request()->get('expiry_date'),
+                                    '_token' => request()->get('_token'),
+                                    'page' => request()->get('page') // Add the page parameter here
+                                ]) }}" class="btn btn-info btn-sm">Details</a>
+                            
                                 <button class="btn btn-success btn-sm" onclick="updateProduct({{ $record->id }})">Call Book</button>
                             </td>
                         </tr>
@@ -139,7 +174,6 @@
             <div class="mt-5">
                 <h4>No Call Records found for the selected date range.</h4>
             </div>
-
         @endif
     </div>
 </div>
@@ -225,6 +259,7 @@
 @endif
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <script>
+    
     function updateProduct(id) {
         document.getElementById('cust_id').value = id;
         // Fetch the call records for the selected customer

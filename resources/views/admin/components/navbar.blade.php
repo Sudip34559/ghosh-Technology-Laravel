@@ -25,6 +25,18 @@
                 <p>{{Auth::user()->email}}</p>
                 <p>{{Auth::user()->role}}</p>
             </div>
+            <form action="{{route('changePassword')}}" method="POST" >
+              @csrf
+              @method('PATCH')
+              <div class="form-group" >
+                <label for="password">Change Password</label>
+                <input type="password" value="{{old('password')}}" placeholder="Enter new password" class="form-control @error('amount') is-invalid @enderror" id="password" name='password'>
+                @error('password')
+                <span class="text-danger small">  {{$message}}</span>
+               @enderror
+              </div>
+              <button type="submit" class="btn btn-primary ">Change</button>
+            </form>
             
         </div>
     </li>
@@ -40,7 +52,7 @@
           </a>
       </li>
     </ul>
-  
+    <!-- Button to trigger the modal -->
   </nav>
    <style>
     /* Button styling */

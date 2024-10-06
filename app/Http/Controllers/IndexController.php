@@ -30,6 +30,7 @@ class IndexController extends Controller
             8 => 'Switched to Another AV',
             9 => 'Not Connected'
         ];
+        $id = Auth::user()->id;
     
         $statusCounts = CallRecord::select('call_status', DB::raw('count(*) as count'))
             ->groupBy('call_status')
@@ -45,17 +46,33 @@ class IndexController extends Controller
                 'labels' => array_values($statuses),
                 'data' => array_values($statusCounts),
             ];
-            $monthlyCalls = CallRecord::select(
-                DB::raw('DATE_FORMAT(created_tymeold, "%Y-%m") as month'),
-                DB::raw('COUNT(*) as count')
-            )
-            ->whereYear('created_tymeold', $currentYear) // Filter by year
-            ->groupBy('month')
-            ->orderBy('month', 'ASC')
-            ->get()
-            ->pluck('count', 'month')
-            ->toArray();
-        
+            if (Auth::user()->role !== 'admin') {
+                $monthlyCalls = CallRecord::with('calledBy')
+                ->whereHas('calledBy', function($query) use ($id) {
+                    $query->where('user_id', $id);
+                })
+                ->select(
+                    DB::raw('DATE_FORMAT(created_tymeold, "%Y-%m") as month'),
+                    DB::raw('COUNT(*) as count')
+                )
+                ->whereYear('created_tymeold', $currentYear) // Filter by year
+                ->groupBy('month')
+                ->orderBy('month', 'ASC')
+                ->get()
+                ->pluck('count', 'month')
+                ->toArray();
+            }else {
+                $monthlyCalls = CallRecord::select(
+                    DB::raw('DATE_FORMAT(created_tymeold, "%Y-%m") as month'),
+                    DB::raw('COUNT(*) as count')
+                )
+                ->whereYear('created_tymeold', $currentYear) // Filter by year
+                ->groupBy('month')
+                ->orderBy('month', 'ASC')
+                ->get()
+                ->pluck('count', 'month')
+                ->toArray();
+            }
             // Generate labels and data for the bar chart
             $months = [];
             $calls = [];
@@ -83,11 +100,22 @@ class IndexController extends Controller
         $year2 = $request->input('year2', date('Y'));
     
         // Fetch sales data grouped by month for the specified year
-        $salesData = Registration::select(DB::raw('SUM(amount) as total_sales'), DB::raw('MONTH(created_date) as month'))
+        if (Auth::user()->role !== 'admin') {
+        $salesData = Registration::with('calledBy')
+        ->whereHas('calledBy', function($query) use ($id) {
+            $query->where('user_id', $id);
+        })->select(DB::raw('SUM(amount) as total_sales'), DB::raw('MONTH(created_date) as month'))
             ->whereYear('created_date', $year2)
             ->groupBy('month')
             ->orderBy('month')
             ->get();
+        }else {
+            $salesData = Registration::select(DB::raw('SUM(amount) as total_sales'), DB::raw('MONTH(created_date) as month'))
+            ->whereYear('created_date', $year2)
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get();
+        }
     
         // Prepare data for the chart
         $months = [];

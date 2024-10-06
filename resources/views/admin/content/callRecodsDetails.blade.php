@@ -9,6 +9,7 @@
                 <h2>Registration Details</h2>
             </div>
             <!-- /.card-header -->
+            {{-- @dd($registration) --}}
             <div class="card-body">
                 <table class="table table-bordered">
                     <tbody>
@@ -108,18 +109,36 @@
                             <th>Com Code</th>
                             <td>{{ $registration->com_code ??  'N/A'}}</td>
                         </tr>
+                        @if ($registration->callRecords !== null)
+                        <tr>
+                            <th>Call Details</th>
+                            <td>
+                                <ul>
+                                @foreach ( $registration->callRecords as $record )
+                                    <li>
+                                        Remarks: {{$record->call_note}},<br>
+                                        Call Status:{{$record->caseStatus->case_status}} <br>
+                                        Call Date:{{$record->created_tyme}} <br>
+                                        Call By: {{$record->calledBy ? $record->calledBy->call_by : 'N/A'}}
+                                    </li>
+                                @endforeach
+                            </ul>
+                            </td>
+                        </tr>
+                        @endif
+                       
                     </tbody>
                 </table>
             </div>
             <!-- /.card-body -->
             <div class="card-footer">
-                <a href="{{ route('registrations.index',[
-                    'column' => request()->get('column'),
-                    'order' => request()->get('order'),
-                    'search' => request()->get('search'),
+                <a href="{{ route('callRecords.index', [
+                    'case_id' => request()->get('case_id'),
+                    'installation_date' => request()->get('installation_date'),
+                    'expiry_date' => request()->get('expiry_date'),
+                    '_token' => request()->get('_token'),
                     'page' => request()->get('page') // Add the page parameter here
-                ]
-                ) }}" class="btn btn-primary">Back to List</a>
+                ]) }}" class="btn btn-secondary">Back</a>
             </div>
             <!-- /.card-footer -->
 
@@ -136,6 +155,4 @@
     <!-- /.container-fluid -->
   </section>
    
-
-
 @endsection

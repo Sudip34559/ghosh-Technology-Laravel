@@ -39,7 +39,7 @@ class RegistrationController extends Controller
         $order = 'asc';
     }
    
-    $query = Registration::with(['products', 'calledBy']);
+    $query = Registration::with(['products', 'calledBy', 'installedBy']);
     //  dd($query);
     // Apply search filter if provided
     if (!empty($search)) {
@@ -48,13 +48,22 @@ class RegistrationController extends Controller
                   ->orWhere('installation_date', 'like', "%{$search}%")
                   ->orWhere('expiry_date', 'like', "%{$search}%")
                   ->orWhere('mobile_no', 'like', "%{$search}%")
-                  ->orWhere('address', 'like', "%{$search}%");
+                  ->orWhere('address', 'like', "%{$search}%")
+                  ->orWhere('amount', 'like', "%{$search}%")
+                  ->orWhere('batch_no', 'like', "%{$search}%")
+                  ->orWhere('payment_received_by', 'like', "%{$search}%")
+                  ->orWhere('email_id', 'like', "%{$search}%");
 
                   $query->orWhereHas('products', function ($query) use ($search) {
                        $query->where('prod_list', 'like', "%{$search}%");
                    });
+                  $query->orWhereHas('calledBy', function ($query) use ($search) {
+                       $query->where('call_by', 'like', "%{$search}%");
+                   });
+                  $query->orWhereHas('installedBy', function ($query) use ($search) {
+                       $query->where('install_by', 'like', "%{$search}%");
+                   });
         });
-
     }
 
     $registrations = $query->orderBy($column, $order)->paginate(20);
@@ -273,14 +282,15 @@ public function show($id)
             $monthYear = $request->input('month_year');
             $year = Carbon::parse($monthYear)->year;
             $month = Carbon::parse($monthYear)->month;
-    
+            $sortColumn = $request->query('column', 'id'); // Default to 'id' if no column is specified
+            $sortOrder = $request->query('order', 'asc');  // Default to 'asc'
             // Base query for retrieving registrations for the specific year and month
             $query = Registration::with(['products'])
                 ->whereYear('created_date', $year)
                 ->whereMonth('created_date', $month);
     
             // Get the paginated results
-            $registrations = $query->paginate(10);
+            $registrations = $query->orderBy($sortColumn, $sortOrder)->paginate(10);
     
             // Get total count for the base query
             $count = Registration::with(['products'])

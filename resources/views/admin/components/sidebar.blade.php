@@ -119,7 +119,7 @@
           </li>
 
           <li class="nav-item">
-            <a href="#"class="nav-link {{request()->routeIs('headers.create') || request()->routeIs('imageGallery.from')||request()->routeIs('textSlider.add')  ? "active" : '' }}">
+            <a href="#"class="nav-link {{request()->routeIs('headers.create') || request()->routeIs('imageGallery.from')||request()->routeIs('textSlider.add') || request()->routeIs('sliderImage.index')  ? "active" : '' }}">
               <i class="nav-icon fas fa-tree"></i>
               <p>
                 UI Updates
@@ -137,6 +137,12 @@
                 <a href="{{route('imageGallery.from')}}" class="nav-link {{request()->routeIs('imageGallery.from') ?"active" : '' }}">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Upload Image</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{route('sliderImage.index')}}" class="nav-link {{request()->routeIs('sliderImage.index') ?"active" : '' }}">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Upload Slider</p>
                 </a>
               </li>
               <li class="nav-item">

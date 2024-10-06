@@ -38,7 +38,7 @@
             <th class="text-center">Product</th>
             <th class="text-center">
                 Installation Date
-                <span onclick="sortTable('installation_date')" id="sort-icon-installation_date" class="sort-icon">↑</span>
+                <!--<span onclick="sortTable('installation_date')" id="sort-icon-installation_date" class="sort-icon">↑</span>-->
             </th>
             <th class="text-center">
                 Expiry Date
@@ -70,8 +70,8 @@
                 <td class="text-center">{{ $registration->customer_name }}</td>
                 <td class="text-center">
                     <a href="{{route('registration.show',$registration->id )}}" class="btn btn-info btn-sm">Details</a>
-                    <a href="{{route('registration.edit',$registration->id )}}"
-                         class="btn btn-warning btn-sm">Edit</a>
+                      <a href="{{route('registration.edit',$registration->id)}}" class="btn btn-warning btn-sm disabled"
+                        >Edit</a>
                 </td>
             </tr>
         @endforeach
@@ -110,23 +110,18 @@
         .then(response => response.json())
         .then(data => {
             // console.log(data.data[0].installedBy);
-            updateTable(data.data);
+            updateTable(data.data, page);
             document.getElementById('pagination-links').innerHTML = data.pagination;
         })
         .catch(error => console.error('Error fetching data:', error));
     }
 
-    function updateTable(registrations) {
-        // console.log(registrations);
-        const user ={
-            id:{{Auth::user()->id}},
-            name: '{{Auth::user()->role}}'
-            }
-        console.log(user)
+    function updateTable(registrations, page = 1) {
         let tableBody = document.getElementById('registration-table-body');
         tableBody.innerHTML = '';
         registrations.forEach((registration, index) => {
-            let detailsUrl = `/registration/${registration.id}`;
+            let detailsUrl = `/registration/${registration.id}`;p
+            
             let editUrl = `/edit-registration/${registration.id}`
             let row = `<tr>
                 <td class="text-center">${index + 1}</td>
@@ -136,7 +131,7 @@
                 <td class="text-center">${registration.customer_name }</td>
                 <td class="text-center">
                     <a href="${detailsUrl}"  class="btn btn-info btn-sm">Details</a>
-                    <a href='${editUrl}' class="btn btn-warning btn-sm " >Edit</a>
+                    <a href='${editUrl}' class="btn btn-warning btn-sm">Edit</a>
                 </td>
             </tr>`;
             tableBody.innerHTML += row;

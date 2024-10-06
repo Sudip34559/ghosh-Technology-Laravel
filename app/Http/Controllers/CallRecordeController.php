@@ -28,23 +28,24 @@ class CallRecordeController extends Controller
             $installationDate = $request->input('installation_date');
             $expiryDate = $request->input('expiry_date');
             $case_id = $request->input('case_id');
+            $sortColumn = $request->query('column', 'id'); // Default to 'id' if no column is specified
+            $sortOrder = $request->query('order', 'asc');  // Default to 'asc'
             // dd($case_id);
             if ($case_id === 'null') {
-                $registrations = Registration::with('callRecords','callRecords.caseStatus','products')->where('expiry_date', '<=', $expiryDate)
-                ->where('expiry_date', '>=', $installationDate)
-                ->paginate(10);
+                $query = Registration::with('callRecords','callRecords.caseStatus','products')->where('expiry_date', '<=', $expiryDate)
+                ->where('expiry_date', '>=', $installationDate);
                 // dd('null');
             }else{
-                $registrations = Registration::with('callRecords', 'callRecords.caseStatus', 'products')
+                $query = Registration::with('callRecords', 'callRecords.caseStatus', 'products')
                 ->where('expiry_date', '<=', $expiryDate)
                 ->where('expiry_date', '>=', $installationDate)
                 ->whereHas('callRecords', function($query) use ($case_id) {
                     $query->where('call_status', $case_id);
-                })
-                ->paginate(10);
+                });
                 // dd('pp');
-            
             }
+            $query->orderBy($sortColumn, $sortOrder);
+            $registrations = $query->paginate(20);
             $callBy = CallBy::all();
             $callStatus = CaseStatus::all();
 
@@ -84,6 +85,13 @@ class CallRecordeController extends Controller
         $query = $request->only(['_token','installation_date', 'expiry_date', 'case_id']);
         // dd($query);
     return redirect()->route('callRecords.index', $query)->with('success', 'Call status updated successfully.');
+    }
+
+    public function callrecordesDetails($id){
+        // dd($id);
+        $registration = Registration::with('callRecords','callRecords.calledBy','callRecords.caseStatus','products','installedBy', 'calledBy', 'paymentReceivedBy')->where('id', $id)->first();
+        // dd($registration);
+        return view('admin.content.callRecodsDetails', compact('registration'));
     }
     
 }
